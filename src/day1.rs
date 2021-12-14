@@ -1,8 +1,7 @@
-use std::fs;
+use crate::helper::load_input_for_day;
 
-fn main() {
-    // load input
-    let input = fs::read_to_string("input.txt").expect("input file missing!");
+pub fn run() {
+    let input = load_input_for_day(1);
     // convert to numbers
     let measurements: Vec<usize> = input
         .split("\n")

@@ -1,8 +1,8 @@
-use std::fs;
+use crate::helper::load_input_for_day;
 
-fn main() {
+pub fn run() {
     // load input
-    let input = fs::read_to_string("input.txt").expect("input file missing!");
+    let input = load_input_for_day(2);
     // convert to better format
     let instructions: Vec<(&str, usize)> = input
         .split("\n")
