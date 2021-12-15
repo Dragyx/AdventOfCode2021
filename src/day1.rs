@@ -1,4 +1,4 @@
-use crate::helper::load_input_for_day;
+use crate::helper::{load_input_for_day, out};
 
 pub fn run() {
     let input = load_input_for_day(1);
@@ -19,10 +19,7 @@ pub fn run() {
         .flat_map(<&[usize; 2]>::try_from)
         .filter(|&&[a, b]| b > a)
         .count();
-    println!(
-        "Task 1: The number of depth measurements that are greater than the preceding one is: {}",
-        count1
-    );
+    out(1).var("number of measurements greater than the last", count1).print();
 
     // ---------------------------- Task 2 -------------------------------
     // calculate the sum of each sliding window
@@ -40,8 +37,5 @@ pub fn run() {
         .filter(|[a, b]| b > a)
         .count();
 
-    println!(
-        "Task 2: The number of depth measurements that are greater than the preceding one is: {}",
-        count2
-    );
+    out(2).var("number of measurements greater than the last", count2).print();
 }

@@ -1,4 +1,4 @@
-use crate::helper::load_input_for_day;
+use crate::helper::{load_input_for_day, out};
 
 pub fn run() {
     // load input
@@ -31,11 +31,10 @@ pub fn run() {
             _ => panic!("Invalid command!"),
         }
     }
-    println!(
-        "Task 1: The end position is {:?} and the product is {}",
-        position,
-        position[0] * position[1]
-    );
+    out(1)
+     .var("end position", position)
+     .var("product", position[0] * position[0])
+     .print();
     // ---------------------------------- Task 2 ----------------------------------
     // starting position [aim, horizontal_position, depth]
     let mut depth = 0;
@@ -64,9 +63,10 @@ pub fn run() {
         }
     }
 
-    println!(
-        "Task 2: The product is {} (aim={}, depth={}, hpos={})",
-        depth * hpos,
-        aim, hpos, depth
-    );
+    out(2)
+     .var("aim", aim)
+     .var("hpos", hpos)
+     .var("depth", depth)
+     .var("product", depth*hpos)
+     .print();
 }
