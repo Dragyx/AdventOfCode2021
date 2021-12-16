@@ -108,10 +108,10 @@ pub fn run() {
     let gamma = bitvec_to_usize(&gamma_vec);
     let epsilon = bitvec_to_usize(&epsilon_vec);
     out(1)
-     .var("gamma", gamma)
-     .var("epsilon", epsilon)
-     .var("product", gamma*epsilon)
-     .print();
+        .var("gamma", gamma)
+        .var("epsilon", epsilon)
+        .var("product", gamma * epsilon)
+        .print();
     // --------------------------- Task 2 ----------------------------
     // convert input data to bitvecs
     let bitvec_input: Vec<Vec<bool>> = data.iter().map(|row| charvec_to_bitvec(row)).collect();
@@ -122,8 +122,8 @@ pub fn run() {
     let oxygen_generator_rating = bitvec_to_usize(&oxygen_generator_data[0]);
     let co2_scrubber_data = bitvec_to_usize(&co2_scrubber_data[0]);
     out(2)
-     .var("Oxygen Generator Data", oxygen_generator_rating)
-     .var("CO2 Scrubber Data", co2_scrubber_data)
-     .var("Product", oxygen_generator_rating * co2_scrubber_data)
-     .print();
+        .var("Oxygen Generator Data", oxygen_generator_rating)
+        .var("CO2 Scrubber Data", co2_scrubber_data)
+        .var("Product", oxygen_generator_rating * co2_scrubber_data)
+        .print();
 }

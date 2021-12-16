@@ -121,13 +121,13 @@ pub fn run() {
             board.number_drawn(draw);
             if board.check_win() {
                 let unmarked_sum = board.sum_unmarked();
-                if board_count == 0 || board_count == num_boards - 1{
+                if board_count == 0 || board_count == num_boards - 1 {
                     out(1)
-                     .var("sum", unmarked_sum)
-                     .var("current draw", draw)
-                     .var("product", draw * unmarked_sum)
-                     .print()
-                } 
+                        .var("sum", unmarked_sum)
+                        .var("current draw", draw)
+                        .var("product", draw * unmarked_sum)
+                        .print()
+                }
                 board_count += 1;
             }
         }

@@ -32,9 +32,9 @@ pub fn run() {
         }
     }
     out(1)
-     .var("end position", position)
-     .var("product", position[0] * position[0])
-     .print();
+        .var("end position", position)
+        .var("product", position[0] * position[0])
+        .print();
     // ---------------------------------- Task 2 ----------------------------------
     // starting position [aim, horizontal_position, depth]
     let mut depth = 0;
@@ -64,9 +64,9 @@ pub fn run() {
     }
 
     out(2)
-     .var("aim", aim)
-     .var("hpos", hpos)
-     .var("depth", depth)
-     .var("product", depth*hpos)
-     .print();
+        .var("aim", aim)
+        .var("hpos", hpos)
+        .var("depth", depth)
+        .var("product", depth * hpos)
+        .print();
 }

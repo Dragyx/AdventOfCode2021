@@ -19,7 +19,9 @@ pub fn run() {
         .flat_map(<&[usize; 2]>::try_from)
         .filter(|&&[a, b]| b > a)
         .count();
-    out(1).var("number of measurements greater than the last", count1).print();
+    out(1)
+        .var("number of measurements greater than the last", count1)
+        .print();
 
     // ---------------------------- Task 2 -------------------------------
     // calculate the sum of each sliding window
@@ -37,5 +39,7 @@ pub fn run() {
         .filter(|[a, b]| b > a)
         .count();
 
-    out(2).var("number of measurements greater than the last", count2).print();
+    out(2)
+        .var("number of measurements greater than the last", count2)
+        .print();
 }

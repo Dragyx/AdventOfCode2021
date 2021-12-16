@@ -24,10 +24,22 @@ impl OutputFormatter {
     pub fn print(&self) {
         let task = format!("(Task {} ): ", self.task.to_string().bold()).yellow();
         print!("{}", task);
-        for (k, v) in self.fields.iter() {
-            print!(" {}={}", k.green(), format!("{:?}", v).blue());
+        let mut field_iter = self.fields.iter();
+        if self.fields.len() == 1 {
+            if let Some((k, v)) = field_iter.next() {
+                println!(" {}={}", k.green(), format!("{:?}", v).blue());
+            }
+            return
+        } else {
+            println!();
         }
-        println!("");
+        let longest_field = self.fields.keys().max_by_key(
+                | field | field.len()
+        ).unwrap().len();
+        for (k, v) in field_iter {
+            let padding = " ".repeat(longest_field - k.len());
+            println!("\t↳{}{} ={}", k.green(), padding, format!("{:?}", v).blue());
+        }
     }
 }
 

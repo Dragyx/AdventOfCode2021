@@ -4,6 +4,7 @@ pub mod day1;
 pub mod day2;
 pub mod day3;
 pub mod day4;
+pub mod day5;
 mod helper;
 
 const HEADER_WIDTH: usize = 70;
@@ -31,4 +32,6 @@ pub fn run() {
     day3::run();
     sep(4);
     day4::run();
+    sep(5);
+    day5::run();
 }
