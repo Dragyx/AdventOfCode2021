@@ -47,10 +47,10 @@ impl Line {
                 // it has to be incremented or decremented
                 // to reach the end position.
                 let mut position = p1;
+                points.push(position);
                 let xstep_positive = p1[0] == x_range[0];
                 let ystep_positive = p1[1] == y_range[0];
                 loop {
-                    points.push(position);     
                     // advance
                     match xstep_positive {
                         true => position[0] += 1,
@@ -60,6 +60,7 @@ impl Line {
                         true => position[1] += 1,
                         false => position[1] -= 1,
                     }
+                    points.push(position);     
                     if position == p2 {break;}
                 }
             }
@@ -106,7 +107,17 @@ impl CoordinateSystem {
 }
 
 pub fn run() {
-    let input = load_input_for_day(5);
+    let input = "0,9 -> 5,9
+    8,0 -> 0,8
+    9,4 -> 3,4
+    2,2 -> 2,1
+    7,0 -> 7,4
+    6,4 -> 2,0
+    0,9 -> 2,9
+    3,4 -> 1,4
+    0,0 -> 8,8
+    5,5 -> 8,2".to_string();
+    let input= load_input_for_day(5);
     let coordinate_system = CoordinateSystem::from_string(input);
     // println!("{:?}", coordinate_system);
     let intersections_no_diagonals = coordinate_system.find_intersections(true);
@@ -116,6 +127,7 @@ pub fn run() {
         .filter(|intersection_count| **intersection_count > 1)
         .count();
     let intersections = coordinate_system.find_intersections(false);
+        // println!("{:?}", intersections);
     let count2 = intersections
         .values()
         .filter(|intersection_count| **intersection_count > 1)
