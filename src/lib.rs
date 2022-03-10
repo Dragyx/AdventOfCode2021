@@ -1,10 +1,16 @@
 use colored::Colorize;
 
 pub mod day1;
+pub mod day10;
+pub mod day11;
 pub mod day2;
 pub mod day3;
 pub mod day4;
 pub mod day5;
+pub mod day6;
+pub mod day7;
+pub mod day8;
+pub mod day9;
 mod helper;
 
 const HEADER_WIDTH: usize = 70;
@@ -34,4 +40,16 @@ pub fn run() {
     day4::run();
     sep(5);
     day5::run();
+    sep(6);
+    day6::run();
+    sep(7);
+    day7::run();
+    sep(8);
+    day8::run();
+    sep(9);
+    day9::run();
+    sep(10);
+    day10::run();
+    sep(11);
+    day11::run();
 }

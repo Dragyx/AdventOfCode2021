@@ -29,13 +29,16 @@ impl OutputFormatter {
             if let Some((k, v)) = field_iter.next() {
                 println!(" {}={}", k.green(), format!("{:?}", v).blue());
             }
-            return
+            return;
         } else {
             println!();
         }
-        let longest_field = self.fields.keys().max_by_key(
-                | field | field.len()
-        ).unwrap().len();
+        let longest_field = self
+            .fields
+            .keys()
+            .max_by_key(|field| field.len())
+            .unwrap()
+            .len();
         for (k, v) in field_iter {
             let padding = " ".repeat(longest_field - k.len());
             println!("\t↳{}{} ={}", k.green(), padding, format!("{:?}", v).blue());

@@ -32,8 +32,8 @@ impl Line {
         let mut y_range = [p1[1], p2[1]];
         y_range.sort();
         match orient {
-            Orient::HORIZONTAL|Orient::VERTICAL => {
-                // interpolate the points 
+            Orient::HORIZONTAL | Orient::VERTICAL => {
+                // interpolate the points
                 points = (x_range[0]..=x_range[1])
                     .map(|x| (y_range[0]..=y_range[1]).map(move |y| [x, y]))
                     .flatten()
@@ -42,7 +42,7 @@ impl Line {
             Orient::DIAGONAL => {
                 points = Vec::new();
                 // has 45° angle
-                
+
                 // for each coordinate, determine if
                 // it has to be incremented or decremented
                 // to reach the end position.
@@ -60,8 +60,10 @@ impl Line {
                         true => position[1] += 1,
                         false => position[1] -= 1,
                     }
-                    points.push(position);     
-                    if position == p2 {break;}
+                    points.push(position);
+                    if position == p2 {
+                        break;
+                    }
                 }
             }
         }
@@ -97,7 +99,9 @@ impl CoordinateSystem {
     pub fn find_intersections(&self, ignore_diagonals: bool) -> HashMap<[u32; 2], u32> {
         let mut intersections = HashMap::<[u32; 2], u32>::new();
         for l in self.lines.iter() {
-            if ignore_diagonals && l.orient == Orient::DIAGONAL { continue }
+            if ignore_diagonals && l.orient == Orient::DIAGONAL {
+                continue;
+            }
             for p in l.points.iter() {
                 *intersections.entry(*p).or_insert(0) += 1;
             }
@@ -107,17 +111,7 @@ impl CoordinateSystem {
 }
 
 pub fn run() {
-    let input = "0,9 -> 5,9
-    8,0 -> 0,8
-    9,4 -> 3,4
-    2,2 -> 2,1
-    7,0 -> 7,4
-    6,4 -> 2,0
-    0,9 -> 2,9
-    3,4 -> 1,4
-    0,0 -> 8,8
-    5,5 -> 8,2".to_string();
-    let input= load_input_for_day(5);
+    let input = load_input_for_day(5);
     let coordinate_system = CoordinateSystem::from_string(input);
     // println!("{:?}", coordinate_system);
     let intersections_no_diagonals = coordinate_system.find_intersections(true);
@@ -127,11 +121,13 @@ pub fn run() {
         .filter(|intersection_count| **intersection_count > 1)
         .count();
     let intersections = coordinate_system.find_intersections(false);
-        // println!("{:?}", intersections);
+    // println!("{:?}", intersections);
     let count2 = intersections
         .values()
         .filter(|intersection_count| **intersection_count > 1)
         .count();
-    out(1).var("line overlaps (2 or more, without diagonals)", count1).print();
+    out(1)
+        .var("line overlaps (2 or more, without diagonals)", count1)
+        .print();
     out(2).var("line overlaps (2 or more)", count2).print();
 }
