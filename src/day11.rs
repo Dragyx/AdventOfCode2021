@@ -4,7 +4,7 @@ use std::{
     slice::SliceIndex,
 };
 
-use crate::helper::{out, load_input_for_day};
+use crate::helper::{load_input_for_day, out};
 
 struct OctoField<const SX: usize, const SY: usize> {
     field: [[u8; SY]; SX],
@@ -51,7 +51,7 @@ impl<const SX: usize, const SY: usize> OctoField<SX, SY> {
             for y in 0..SY {
                 // we know that this is in bounds because we literally use the array size
                 // to create the iterator over x and y
-                let octopus = &mut self.field[x][y]; 
+                let octopus = &mut self.field[x][y];
                 *octopus += 1;
                 if *octopus > 9 {
                     has_flashed[x][y] = true;
@@ -137,13 +137,13 @@ impl<const SX: usize, const SY: usize> Display for OctoField<SX, SY> {
 }
 
 pub fn run() {
-    /* 
+    /*
     let input = "11111
     19991
     19191
     19991
     11111";
-     
+
     let input = "5483143223
         2745854711
         5264556173
@@ -173,5 +173,7 @@ pub fn run() {
             }
         }
     }
-    out(2).var("first full flash", first_time_full_flash).print();
+    out(2)
+        .var("first full flash", first_time_full_flash)
+        .print();
 }
