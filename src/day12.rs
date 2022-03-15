@@ -77,13 +77,13 @@ struct Node {
 
 struct NetworkIter<'a> {
     network: &'a Network<'a, Node>,
-    path_stack: Vec<(Vec<(NodeID, &'a Payload<'a, Node>)>, bool)>,
+    path_stack: Vec<(Vec<NodeID>, bool)>,
     double_caves: bool
 }
 impl<'a> NetworkIter<'a> {
     pub fn new(n: &'a Network<'a, Node>, double_caves: bool) -> Self {
         let s = match n.start {
-            Some(id) => vec![(vec![(id, n.get(&id).unwrap())], false)],
+            Some(id) => vec![(vec![id], false)],
             None => vec![],
         };
         Self {
@@ -95,17 +95,18 @@ impl<'a> NetworkIter<'a> {
 }
 
 impl<'a> Iterator for NetworkIter<'a> {
-    type Item = Vec<(NodeID, &'a Payload<'a, Node>)>;
+    type Item = Vec<NodeID>;
 
     fn next(&mut self) -> Option<Self::Item> {
         let start = self.network.start?;
         let end = self.network.end?;
         while let Some((unfinished_path, one_visited_twice)) = self.path_stack.pop() {
-            let (last_id, node) = unfinished_path.last().unwrap();
+            let last_id = unfinished_path.last().unwrap();
+            let last_payload = self.network.get(last_id).expect("Node connection doesn't exist.");
             if *last_id == end {
                 return Some(unfinished_path)
             }
-            for conn in node.conns.iter() {
+            for conn in last_payload.conns.iter() {
                 let payload = self.network.get(conn).unwrap();
                 // you cannot go back to the start
                 if *conn == start {
@@ -114,7 +115,7 @@ impl<'a> Iterator for NetworkIter<'a> {
                 // has the cave already been visited
                 let already_visited= unfinished_path 
                     .iter()
-                    .any(| (id, _) | id == conn);
+                    .any(| id | id == conn);
 
                 if payload.value.small {
                     if self.double_caves {
@@ -128,7 +129,7 @@ impl<'a> Iterator for NetworkIter<'a> {
                     }
                 }
                 let mut new_path = unfinished_path.clone();
-                new_path.push((*conn, payload));
+                new_path.push(*conn);
                 self.path_stack.push((new_path, (already_visited && payload.value.small) || one_visited_twice));
             }
         }
