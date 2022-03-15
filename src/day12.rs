@@ -2,6 +2,7 @@ use std::{collections::{HashMap, HashSet}, error::Error, fmt::Display, slice::Sl
 
 use crate::helper::{load_input_for_day, out};
 
+#[derive(Debug)]
 struct Payload<'a, T> {
     value: T,
     conns: Vec<NodeID>,
@@ -68,6 +69,8 @@ impl<'a, T> Network<'a, T> {
         self.nodes.get(id)
     }
 }
+
+#[derive(Debug)]
 struct Node {
     small: bool
 }
@@ -97,41 +100,36 @@ impl<'a> Iterator for NetworkIter<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         let start = self.network.start?;
         let end = self.network.end?;
-        while let Some((unfinished_path, mut one_visited_twice)) = self.path_stack.pop() {
+        while let Some((unfinished_path, one_visited_twice)) = self.path_stack.pop() {
             let (last_id, node) = unfinished_path.last().unwrap();
             if *last_id == end {
                 return Some(unfinished_path)
             }
             for conn in node.conns.iter() {
                 let payload = self.network.get(conn).unwrap();
-                let mut is_valid = match payload.value.small {
-                    // is only allowed to appear once in the path
-                    true => {
-                        if self.double_caves {
-                            !one_visited_twice
-                        } else {
-                            !unfinished_path
-                                .iter()
-                                .any(| (id, _) | id == conn)
+                // you cannot go back to the start
+                if *conn == start {
+                    continue
+                }
+                // has the cave already been visited
+                let already_visited= unfinished_path 
+                    .iter()
+                    .any(| (id, _) | id == conn);
+
+                if payload.value.small {
+                    if self.double_caves {
+                        if one_visited_twice && already_visited {
+                            continue
                         }
-                    },
-                    false => true,
-                };
-                if !one_visited_twice && self.double_caves {
-                    let count = unfinished_path
-                        .iter()
-                        .filter(| (id, _) | id == conn)
-                        .count();
-                    if count >= 2 {
-                        one_visited_twice = true;
+                    } else {
+                        if already_visited {
+                            continue
+                        }
                     }
                 }
-                is_valid = is_valid && *conn != start;
-                if is_valid {
-                    let mut new_path = unfinished_path.clone();
-                    new_path.push((*conn, payload));
-                    self.path_stack.push((new_path, one_visited_twice));
-                }
+                let mut new_path = unfinished_path.clone();
+                new_path.push((*conn, payload));
+                self.path_stack.push((new_path, (already_visited && payload.value.small) || one_visited_twice));
             }
         }
         None
@@ -158,7 +156,7 @@ A-b
 b-d
 A-end
 b-end";
-    // let input = load_input_for_day(12);
+    let input = load_input_for_day(12);
     let mut network = Network::<Node>::new();
     let node_names_duplicates = input
         .lines()
@@ -191,7 +189,7 @@ b-end";
     }
     let mut count_second_task: u64 = 0;
     for p in NetworkIter::new(&network, true) {
-        print_path(&p);
+        // print_path(&p);
         count_second_task += 1;
     }
     out(1)
