@@ -1,4 +1,9 @@
-use std::{collections::{HashMap, HashSet}, error::Error, fmt::Display, slice::SliceIndex};
+use std::{
+    collections::{HashMap, HashSet},
+    error::Error,
+    fmt::Display,
+    slice::SliceIndex,
+};
 
 use crate::helper::{load_input_for_day, out};
 
@@ -6,13 +11,13 @@ use crate::helper::{load_input_for_day, out};
 struct Payload<'a, T> {
     value: T,
     conns: Vec<NodeID>,
-    name: &'a str 
+    name: &'a str,
 }
 struct Network<'a, T> {
     nodes: HashMap<NodeID, Payload<'a, T>>,
     start: Option<NodeID>,
     end: Option<NodeID>,
-    id_counter: usize
+    id_counter: usize,
 }
 
 #[derive(Hash, Clone, Debug, PartialEq, Eq, Copy)]
@@ -20,7 +25,7 @@ pub struct NodeID(usize);
 
 #[derive(Debug)]
 struct ConnectionError {
-    msg: String
+    msg: String,
 }
 impl Display for ConnectionError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -28,7 +33,7 @@ impl Display for ConnectionError {
     }
 }
 
-impl Error for ConnectionError { }
+impl Error for ConnectionError {}
 
 impl<'a, T> Network<'a, T> {
     pub fn add_node(&mut self, name: &'a str, node: T) -> NodeID {
@@ -49,7 +54,9 @@ impl<'a, T> Network<'a, T> {
     }
     pub fn connect(&mut self, id1: NodeID, id2: NodeID) -> Result<(), Box<dyn Error>> {
         if id1 == id2 {
-            return Err(Box::new(ConnectionError{ msg: "Cannot connect node with itself".into() } ))
+            return Err(Box::new(ConnectionError {
+                msg: "Cannot connect node with itself".into(),
+            }));
         }
         let n1 = self.nodes.get_mut(&id1).ok_or("Wrong ID")?;
         n1.conns.push(id2);
@@ -72,13 +79,13 @@ impl<'a, T> Network<'a, T> {
 
 #[derive(Debug)]
 struct Node {
-    small: bool
+    small: bool,
 }
 
 struct NetworkIter<'a> {
     network: &'a Network<'a, Node>,
     path_stack: Vec<(Vec<NodeID>, bool)>,
-    double_caves: bool
+    double_caves: bool,
 }
 impl<'a> NetworkIter<'a> {
     pub fn new(n: &'a Network<'a, Node>, double_caves: bool) -> Self {
@@ -89,9 +96,9 @@ impl<'a> NetworkIter<'a> {
         Self {
             network: n,
             path_stack: s,
-            double_caves
+            double_caves,
         }
-    } 
+    }
 }
 
 impl<'a> Iterator for NetworkIter<'a> {
@@ -102,35 +109,39 @@ impl<'a> Iterator for NetworkIter<'a> {
         let end = self.network.end?;
         while let Some((unfinished_path, one_visited_twice)) = self.path_stack.pop() {
             let last_id = unfinished_path.last().unwrap();
-            let last_payload = self.network.get(last_id).expect("Node connection doesn't exist.");
+            let last_payload = self
+                .network
+                .get(last_id)
+                .expect("Node connection doesn't exist.");
             if *last_id == end {
-                return Some(unfinished_path)
+                return Some(unfinished_path);
             }
             for conn in last_payload.conns.iter() {
                 let payload = self.network.get(conn).unwrap();
                 // you cannot go back to the start
                 if *conn == start {
-                    continue
+                    continue;
                 }
                 // has the cave already been visited
-                let already_visited= unfinished_path 
-                    .iter()
-                    .any(| id | id == conn);
+                let already_visited = unfinished_path.iter().any(|id| id == conn);
 
                 if payload.value.small {
                     if self.double_caves {
                         if one_visited_twice && already_visited {
-                            continue
+                            continue;
                         }
                     } else {
                         if already_visited {
-                            continue
+                            continue;
                         }
                     }
                 }
                 let mut new_path = unfinished_path.clone();
                 new_path.push(*conn);
-                self.path_stack.push((new_path, (already_visited && payload.value.small) || one_visited_twice));
+                self.path_stack.push((
+                    new_path,
+                    (already_visited && payload.value.small) || one_visited_twice,
+                ));
             }
         }
         None
@@ -148,7 +159,6 @@ fn print_path<'a>(p: &Vec<(NodeID, &'a Payload<'a, Node>)>) {
     println!();
 }
 
-
 pub fn run() {
     let input = "start-A
 start-b
@@ -159,9 +169,7 @@ A-end
 b-end";
     let input = load_input_for_day(12);
     let mut network = Network::<Node>::new();
-    let node_names_duplicates = input
-        .lines()
-        .flat_map(| line | line.split('-'));
+    let node_names_duplicates = input.lines().flat_map(|line| line.split('-'));
     let mut node_names: HashSet<&str> = HashSet::new();
     for name in node_names_duplicates {
         node_names.insert(name);
@@ -169,12 +177,7 @@ b-end";
     let mut node_ids = HashMap::new();
     for name in node_names {
         let is_lower = name.chars().next().unwrap().is_lowercase();
-        let id = network.add_node(
-            name, 
-            Node { 
-                small: is_lower
-             }
-        );
+        let id = network.add_node(name, Node { small: is_lower });
         node_ids.insert(name, id);
     }
     for line in input.lines() {
@@ -193,10 +196,6 @@ b-end";
         // print_path(&p);
         count_second_task += 1;
     }
-    out(1)
-        .var("number of paths", count_first_task)
-        .print();
-    out(2)
-        .var("number of paths", count_second_task)
-        .print();
+    out(1).var("number of paths", count_first_task).print();
+    out(2).var("number of paths", count_second_task).print();
 }

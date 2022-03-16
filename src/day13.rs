@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use crate::helper::{out, load_input_for_day};
+use crate::helper::{load_input_for_day, out};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 struct Dot {
@@ -12,13 +12,13 @@ struct Dot {
 struct TransparentPaper {
     dots: Vec<Dot>,
     width: usize,
-    height: usize
+    height: usize,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum FoldAxis {
     X,
-    Y
+    Y,
 }
 
 impl TransparentPaper {
@@ -30,13 +30,13 @@ impl TransparentPaper {
         }
     }
     pub fn add_dot(&mut self, x: i32, y: i32) {
-        if x >= self.width as i32{
+        if x >= self.width as i32 {
             self.width = x as usize + 1;
         }
-        if y >= self.height as i32{
+        if y >= self.height as i32 {
             self.height = y as usize + 1;
         }
-        self.dots.push(Dot {x, y})
+        self.dots.push(Dot { x, y })
     }
     // pub fn parse_dot_string(&mut self)
     pub fn get_size(&self) -> (usize, usize) {
@@ -47,7 +47,7 @@ impl TransparentPaper {
     }
     pub fn fold(&mut self, fold_pos: u32, axis: FoldAxis) {
         let mut offset = 0;
-        let mut folded_dots : Vec<(usize, Dot)> = vec![];
+        let mut folded_dots: Vec<(usize, Dot)> = vec![];
         for (i, dot) in self.dots.iter_mut().enumerate() {
             let coord = match axis {
                 FoldAxis::X => &mut dot.x,
@@ -68,11 +68,10 @@ impl TransparentPaper {
         }
         // in addition, duplicate points are removed
         let mut i: usize = 0;
-        self.dots.retain(| dot | {
-            let retain = !folded_dots.iter()
-                .any(
-                    | (index, folded_dot) | *index != i && dot == folded_dot
-                );
+        self.dots.retain(|dot| {
+            let retain = !folded_dots
+                .iter()
+                .any(|(index, folded_dot)| *index != i && dot == folded_dot);
             i += 1;
             retain
         });
@@ -83,7 +82,7 @@ impl TransparentPaper {
         };
         // this can be quite tricky as the fold can be chosen in
         // way which creates points that are folded beyond the paper
-        // 
+        //
         // the fold line itself is not included in the output
         *coord_to_update = (fold_pos + (-offset) as u32) as usize;
         // now the dot positions need to be updated using the offset
@@ -101,8 +100,8 @@ impl TransparentPaper {
 impl Display for TransparentPaper {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut document = vec![vec!['.'; self.width as usize]; self.height as usize];
-        for Dot {x, y} in &self.dots {
-            document[*y as usize][*x as usize] = '#';   
+        for Dot { x, y } in &self.dots {
+            document[*y as usize][*x as usize] = '#';
         }
         for line in document {
             writeln!(f, "{}", line.into_iter().collect::<String>())?;
@@ -110,8 +109,6 @@ impl Display for TransparentPaper {
         Ok(())
     }
 }
-
-
 
 pub fn run() {
     let input = "6,10
@@ -139,7 +136,7 @@ fold along x=5";
     let mut line_iter = input.lines();
     let dots_str = line_iter
         .by_ref()
-        .take_while(| line | !line.starts_with('\n') && !line.is_empty());
+        .take_while(|line| !line.starts_with('\n') && !line.is_empty());
 
     let mut paper = TransparentPaper::new();
     for dot in dots_str {
@@ -154,18 +151,15 @@ fold along x=5";
         let axis = match axis_str {
             "x" => FoldAxis::X,
             "y" => FoldAxis::Y,
-            _ => panic!()
+            _ => panic!(),
         };
         let fold_pos = fold_pos.parse::<u32>().unwrap();
         paper.fold(fold_pos, axis);
         if i == 0 {
             first_fold_count = paper.get_num_dots();
         }
-        
     }
-    out(1)
-        .var("number of dots", first_fold_count)
-        .var("ASCII-Art output code", "")
-        .print();
+    out(1).var("number of dots", first_fold_count).print();
+    out(2).var("ASCII-Art output code", "").print();
     print!("{}", paper);
 }
