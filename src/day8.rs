@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
-use std::iter::Map;
 use std::ops::Index;
 
 use regex::Regex;
@@ -36,13 +35,13 @@ impl Mapping {
         }
     }
     pub fn insert(&mut self, chars: HashSet<char>, dig: Digit) {
-        match self.mappings.iter_mut().find(|(c, d)| *c == chars) {
+        match self.mappings.iter_mut().find(|(c, _d)| *c == chars) {
             Some(entry) => entry.1 = dig,
             None => self.mappings.push((chars, dig)),
         }
     }
     pub fn get(&self, index: HashSet<char>) -> Option<&Digit> {
-        match self.mappings.iter().find(|(chars, d)| *chars == index) {
+        match self.mappings.iter().find(|(chars, _d)| *chars == index) {
             Some((_c, digit)) => Some(digit),
             None => None,
         }
@@ -56,13 +55,13 @@ impl Index<HashSet<char>> for Mapping {
         &self
             .mappings
             .iter()
-            .find(|(chars, d)| *chars == index)
+            .find(|(chars, _d)| *chars == index)
             .unwrap()
             .1
     }
 }
 
-fn count_repetitions(digits: &Vec<Digit>) -> HashMap<char, u32> {
+fn count_repetitions(digits: &[Digit]) -> HashMap<char, u32> {
     let mut counts = HashMap::<char, u32>::new();
     for d in digits.iter() {
         for c in &d.segments {
@@ -76,9 +75,9 @@ fn count_repetitions(digits: &Vec<Digit>) -> HashMap<char, u32> {
 /// tries to compute a mapping, mapping each wrong segment input to the correct digit
 ///  this is not always possible and if it fails, the outputted HashMap will have missing
 ///  keys
-fn calculate_mapping<'a>(
-    true_digits: &'a [Digit; 10],
-    unique_patterns: &Vec<HashSet<char>>,
+fn calculate_mapping(
+    true_digits: &[Digit; 10],
+    unique_patterns: &[HashSet<char>],
 ) -> Mapping {
     let mut mapping = Mapping::new();
     let trans = unique_patterns
@@ -87,7 +86,7 @@ fn calculate_mapping<'a>(
         .collect::<Vec<Digit>>();
     let mut character_map = HashMap::<char, char>::new();
     // calculate 1, 4, 7, 8 from the pattern length
-    let mut remaining_patterns = unique_patterns.clone();
+    let mut remaining_patterns: Vec<HashSet<char>> = unique_patterns.to_vec();
     remaining_patterns.retain(|pattern| {
         for d in true_digits.iter() {
             if d.unique_len && pattern.len() == d.segments.len() {
@@ -166,7 +165,7 @@ fn calculate_mapping<'a>(
 
 pub fn run() {
     // The true segment to digit mapping
-    let DIGITS: [Digit; 10] = [
+    let true_segment_mapping: [Digit; 10] = [
         Digit::new(0, "abcefg", false),
         Digit::new(1, "cf", true),
         Digit::new(2, "acdeg", false),
@@ -193,7 +192,7 @@ pub fn run() {
     let mut count1478 = 0;
     let mut count = 0;
     // extract information from line
-    for line in input.split("\n") {
+    for line in input.split('\n') {
         let captures = extraction_re.captures(line).expect("Invalid input line.");
         // reminder: first capture is always the whole match
         let capture_strings: Vec<&str> = captures
@@ -201,13 +200,13 @@ pub fn run() {
             .map(|m| m.unwrap().as_str())
             .skip(1)
             .collect();
-        let unique_patterns = &capture_strings[0..10]
+        let unique_patterns: &Vec<HashSet<char>> = &capture_strings[0..10]
             .iter()
             .map(|s| s.chars().collect())
             .collect();
         let digits = &capture_strings[10..14];
         // calculate mapping
-        let mapping = calculate_mapping(&DIGITS, &unique_patterns);
+        let mapping = calculate_mapping(&true_segment_mapping, unique_patterns);
         let number_of_1478 = digits
             .iter()
             .map(|d| mapping.get(d.chars().collect()))

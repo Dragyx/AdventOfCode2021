@@ -11,7 +11,7 @@ pub fn run() {
     // let input = "16,1,2,0,4,2,7,1,2,14";
     let input = load_input_for_day(7);
     let input: Vec<u32> = input
-        .split(",")
+        .split(',')
         .map(|crab_pos| crab_pos.parse().expect("Input number is not a number"))
         .collect();
     let max = input.iter().max().unwrap();

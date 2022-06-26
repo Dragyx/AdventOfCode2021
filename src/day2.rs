@@ -5,10 +5,10 @@ pub fn run() {
     let input = load_input_for_day(2);
     // convert to better format
     let instructions: Vec<(&str, usize)> = input
-        .split("\n")
+        .split('\n')
         .map(|instruction| {
             // extract commands
-            let mut instruction = instruction.split(" ");
+            let mut instruction = instruction.split(' ');
             let command = instruction.next().expect("Empty instruction!");
             let amount_str = instruction.next().expect("Missing amount to move!");
             // convert the amount to a number

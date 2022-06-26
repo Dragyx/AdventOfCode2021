@@ -1,4 +1,4 @@
-use std::{collections::HashMap, hash::Hash};
+use std::collections::HashMap;
 
 use crate::helper::{load_input_for_day, out};
 
@@ -26,7 +26,7 @@ impl Polymer {
             let insert = insert.as_bytes()[0] as char;
             rules.insert([e1, e2], ([e1, insert], [insert, e2]));
         }
-        let rightmost = match polymer_line.len() >= 1 {
+        let rightmost = match !polymer_line.is_empty() {
             true => Some(*polymer_line.last().unwrap() as char),
             false => None,
         };

@@ -1,7 +1,7 @@
 use crate::helper::{load_input_for_day, out};
 
 // which adjacent points should be checked
-const offsets: [[i64; 2]; 4] = [[0i64, -1], [1, 0], [0, 1], [-1, 0]];
+const OFFSETS: [[i64; 2]; 4] = [[0i64, -1], [1, 0], [0, 1], [-1, 0]];
 
 pub struct HeightMap {
     inner_map: Vec<Vec<u8>>,
@@ -37,7 +37,7 @@ impl HeightMap {
             return Err("Point does not exist");
         }
 
-        let adjacent = offsets.iter().filter_map(move |&[off_x, off_y]| {
+        let adjacent = OFFSETS.iter().filter_map(move |&[off_x, off_y]| {
             let (x_i64, y_i64) = (x as i64, y as i64);
             let adjacent_x = x_i64 + off_x;
             let adjacent_y = y_i64 + off_y;
@@ -53,7 +53,7 @@ impl HeightMap {
         });
         Ok(adjacent)
     }
-    pub fn find_low_points<'a>(&'a self) -> impl Iterator<Item = ([usize; 2], u8)> + 'a {
+    pub fn find_low_points(&self) -> impl Iterator<Item = ([usize; 2], u8)> + '_ {
         (0..self.height).flat_map(move |y| {
             (0..self.width).filter_map(move |x| {
                 let point = self.inner_map[y as usize][x as usize];
@@ -73,7 +73,7 @@ impl HeightMap {
         let mut points_checked = vec![vec![false; self.width]; self.height];
         let mut points_to_be_checked = vec![([x, y], value)];
         let mut basin = Vec::new();
-        while points_to_be_checked.len() != 0 {
+        while !points_to_be_checked.is_empty() {
             // check all neighbours that haven't already been checked
             let (pos, value) = points_to_be_checked.pop().unwrap();
             let (x, y) = (pos[0], pos[1]);

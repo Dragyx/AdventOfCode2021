@@ -1,7 +1,4 @@
-use std::{
-    collections::{hash_map, HashMap},
-    error::Error,
-};
+use std::collections::HashMap;
 
 use crate::helper::{load_input_for_day, out};
 
@@ -34,7 +31,7 @@ pub fn parse_line(
                         }
                     }
                 } else {
-                    return Err(format!("Invalid Character found: '{}'", c).to_string());
+                    return Err(format!("Invalid Character found: '{}'", c));
                 }
             }
         }
@@ -50,7 +47,7 @@ pub fn parse_line(
             for c in chunk_stack.into_iter().rev() {
                 let inverse_char = *symbol_map
                     .get(&c)
-                    .ok_or(format!("Invalid Character found: '{}'", c).to_string())?;
+                    .ok_or_else(|| format!("Invalid Character found: '{}'", c))?;
                 reverse_sequence.push(inverse_char);
             }
             Ok(LineStatus::Incomplete {
@@ -108,7 +105,7 @@ pub fn run() {
             }
         }
     }
-    scores_incomplete.sort();
+    scores_incomplete.sort_unstable();
     let score_incomplete = scores_incomplete[scores_incomplete.len() / 2];
     out(1).var("corrupted score", score_corrupted).print();
     out(2).var("incomplete score", score_incomplete).print();

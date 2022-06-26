@@ -38,10 +38,6 @@ impl TransparentPaper {
         }
         self.dots.push(Dot { x, y })
     }
-    // pub fn parse_dot_string(&mut self)
-    pub fn get_size(&self) -> (usize, usize) {
-        (self.width, self.height)
-    }
     pub fn get_num_dots(&self) -> usize {
         self.dots.len()
     }
@@ -111,6 +107,7 @@ impl Display for TransparentPaper {
 }
 
 pub fn run() {
+    #[allow(unused)]
     let input = "6,10
 0,14
 9,10

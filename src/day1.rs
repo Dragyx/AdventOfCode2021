@@ -4,7 +4,7 @@ pub fn run() {
     let input = load_input_for_day(1);
     // convert to numbers
     let measurements: Vec<usize> = input
-        .split("\n")
+        .split('\n')
         .map(|depth_str| {
             depth_str
                 .parse::<usize>()

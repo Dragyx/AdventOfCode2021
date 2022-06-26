@@ -1,7 +1,6 @@
 use std::{
     error::Error,
-    fmt::{Display, Octal},
-    slice::SliceIndex,
+    fmt::Display,
 };
 
 use crate::helper::{load_input_for_day, out};
@@ -47,6 +46,7 @@ impl<const SX: usize, const SY: usize> OctoField<SX, SY> {
         let mut has_flashed = [[false; SY]; SX];
         self.counter += 1;
         // detect initial flashes
+        #[allow(clippy::needless_range_loop)]
         for x in 0..SX {
             for y in 0..SY {
                 // we know that this is in bounds because we literally use the array size
@@ -72,6 +72,7 @@ impl<const SX: usize, const SY: usize> OctoField<SX, SY> {
             }
         }
         let mut flash_count_this_step = 0;
+        #[allow(clippy::needless_range_loop)]
         for x in 0..SX {
             for y in 0..SY {
                 if has_flashed[x][y] {
@@ -126,7 +127,7 @@ impl<const SX: usize, const SY: usize> Display for OctoField<SX, SY> {
                 let value = unsafe { self.field.get_unchecked(x).get_unchecked(y) };
                 write!(f, "{}", value)?;
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
         writeln!(f, "{}", "-".repeat(SX))?;
         writeln!(f, "STEPS: {}", self.counter)?;
@@ -166,11 +167,9 @@ pub fn run() {
     let mut octofield = OctoField::<10, 10>::from_str(input).unwrap();
     let mut first_time_full_flash: Option<u64> = None;
     loop {
-        if octofield.perform_step() {
-            if first_time_full_flash.is_none() {
-                first_time_full_flash = Some(octofield.counter);
-                break;
-            }
+        if octofield.perform_step() && first_time_full_flash.is_none() {
+            first_time_full_flash = Some(octofield.counter);
+            break;
         }
     }
     out(2)

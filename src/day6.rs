@@ -26,7 +26,7 @@ where
 /// to a VecDeque
 fn instring_to_deque(fishin: &str, timer_states: usize) -> VecDeque<u32> {
     let fish_list_seperate: Vec<u32> = fishin
-        .split(",")
+        .split(',')
         .map(|timer| timer.parse().expect("Input timer is not an integer!"))
         .collect();
     let mut fish_list_fused: VecDeque<u32> = vec![0; timer_states].into();
@@ -37,7 +37,7 @@ fn instring_to_deque(fishin: &str, timer_states: usize) -> VecDeque<u32> {
 }
 
 pub fn run() {
-    let input = "3,4,3,1,2";
+    // let input = "3,4,3,1,2";
     let input = load_input_for_day(6);
     let mut fused_fish = instring_to_deque(&input, 9);
     let mut fused_fish_task2: VecDeque<u64> = fused_fish

@@ -6,7 +6,7 @@ pub mod day11;
 pub mod day12;
 pub mod day13;
 pub mod day14;
-pub mod day15;
+// pub mod day15; comment out until day 16 is completed
 pub mod day2;
 pub mod day3;
 pub mod day4;
@@ -63,5 +63,5 @@ pub fn run() {
     sep(14);
     day14::run();
     sep(15);
-    day15::run();
+    // day15::run();
 }

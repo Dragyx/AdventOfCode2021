@@ -2,7 +2,6 @@ use std::{
     collections::{HashMap, HashSet},
     error::Error,
     fmt::Display,
-    slice::SliceIndex,
 };
 
 use crate::helper::{load_input_for_day, out};
@@ -11,6 +10,7 @@ use crate::helper::{load_input_for_day, out};
 struct Payload<'a, T> {
     value: T,
     conns: Vec<NodeID>,
+    #[allow(dead_code)]
     name: &'a str,
 }
 struct Network<'a, T> {
@@ -130,10 +130,8 @@ impl<'a> Iterator for NetworkIter<'a> {
                         if one_visited_twice && already_visited {
                             continue;
                         }
-                    } else {
-                        if already_visited {
-                            continue;
-                        }
+                    } else if already_visited {
+                        continue;
                     }
                 }
                 let mut new_path = unfinished_path.clone();
@@ -148,7 +146,8 @@ impl<'a> Iterator for NetworkIter<'a> {
     }
 }
 
-fn print_path<'a>(p: &Vec<(NodeID, &'a Payload<'a, Node>)>) {
+#[allow(dead_code)]
+fn print_path<'a>(p: &[(NodeID, &'a Payload<'a, Node>)]) {
     for (_, payload) in p.iter().rev().skip(1).rev() {
         print!("{}", payload.name);
         print!("->");
@@ -160,6 +159,7 @@ fn print_path<'a>(p: &Vec<(NodeID, &'a Payload<'a, Node>)>) {
 }
 
 pub fn run() {
+    #[allow(unused)]
     let input = "start-A
 start-b
 A-c
@@ -192,7 +192,7 @@ b-end";
         count_first_task += 1;
     }
     let mut count_second_task: u64 = 0;
-    for p in NetworkIter::new(&network, true) {
+    for _p in NetworkIter::new(&network, true) {
         // print_path(&p);
         count_second_task += 1;
     }

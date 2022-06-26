@@ -27,7 +27,7 @@ trait Bingo {
 
 impl Board {
     /// generates a new bingo board from text input
-    pub fn new(in_lines: &Vec<&str>) -> Board {
+    pub fn new(in_lines: &[&str]) -> Board {
         let mut grid = Vec::<Vec<Field>>::with_capacity(in_lines.len());
         for line in in_lines {
             let numbers: Vec<Field> = line
@@ -93,9 +93,9 @@ impl Bingo for Board {
 pub fn run() {
     let input = load_input_for_day(4);
     // read the draws
-    let mut lines = input.split("\n");
+    let mut lines = input.split('\n');
     let draws = lines.next().unwrap();
-    let draws = draws.split(",").map(|s| s.parse::<usize>().unwrap());
+    let draws = draws.split(',').map(|s| s.parse::<usize>().unwrap());
     lines.next();
     // list of bingo boards
     let mut boards = Vec::<Board>::new();

@@ -13,7 +13,7 @@ use crate::helper::{load_input_for_day, out};
 /// Afterwards it is a vector, containing the lines
 /// Each line stores a list of digits (as chars)
 fn parse_input(input: String) -> Vec<Vec<char>> {
-    let lines = input.split("\n");
+    let lines = input.split('\n');
 
     lines.map(|l| l.chars().collect()).collect()
 }
@@ -32,7 +32,7 @@ fn bitvec_to_usize(bitvec: &[bool]) -> usize {
     output
 }
 
-fn charvec_to_bitvec(int_string: &Vec<char>) -> Vec<bool> {
+fn charvec_to_bitvec(int_string: &[char]) -> Vec<bool> {
     let mut output = Vec::with_capacity(int_string.len());
     for digit in int_string.iter() {
         // check the digit
@@ -114,7 +114,7 @@ pub fn run() {
         .print();
     // --------------------------- Task 2 ----------------------------
     // convert input data to bitvecs
-    let bitvec_input: Vec<Vec<bool>> = data.iter().map(|row| charvec_to_bitvec(row)).collect();
+    let bitvec_input: Vec<Vec<bool>> = data.iter().map(| row | charvec_to_bitvec(row)).collect();
     let mut oxygen_generator_data = bitvec_input.clone();
     let mut co2_scrubber_data = bitvec_input;
     find_oxygen_generator(&mut oxygen_generator_data);

@@ -5,9 +5,9 @@ use regex;
 
 #[derive(PartialEq, Debug)]
 enum Orient {
-    VERTICAL,
-    HORIZONTAL,
-    DIAGONAL,
+    Vertical,
+    Horizontal,
+    Diagonal,
 }
 #[derive(Debug)]
 struct Line {
@@ -18,28 +18,26 @@ impl Line {
     pub fn new(p1: [u32; 2], p2: [u32; 2]) -> Line {
         // Lines are only vertical or horizontal at the moment
         let orient = if p1[0] == p2[0] {
-            Orient::VERTICAL
+            Orient::Vertical
         } else if p2[1] == p1[1] {
-            Orient::HORIZONTAL
+            Orient::Horizontal
         } else {
-            Orient::DIAGONAL
+            Orient::Diagonal
         };
         let mut points;
         // make sure the first value is smaller than the second one (for
         // the ranges)
         let mut x_range = [p1[0], p2[0]];
-        x_range.sort();
+        x_range.sort_unstable();
         let mut y_range = [p1[1], p2[1]];
-        y_range.sort();
+        y_range.sort_unstable();
         match orient {
-            Orient::HORIZONTAL | Orient::VERTICAL => {
+            Orient::Horizontal | Orient::Vertical => {
                 // interpolate the points
-                points = (x_range[0]..=x_range[1])
-                    .map(|x| (y_range[0]..=y_range[1]).map(move |y| [x, y]))
-                    .flatten()
+                points = (x_range[0]..=x_range[1]).flat_map(|x| (y_range[0]..=y_range[1]).map(move |y| [x, y]))
                     .collect();
             }
-            Orient::DIAGONAL => {
+            Orient::Diagonal => {
                 points = Vec::new();
                 // has 45° angle
 
@@ -79,7 +77,7 @@ struct CoordinateSystem {
 impl CoordinateSystem {
     pub fn from_string(lines: String) -> CoordinateSystem {
         let line_regex = regex::Regex::new(r"(\d+),(\d+) -> (\d+),(\d+)").unwrap();
-        let points = lines.split("\n").map(|line| {
+        let points = lines.split('\n').map(|line| {
             // extract all coordinates
             let re_match = line_regex.captures(line).expect("Invalid line in input!");
             let mut re_match = re_match.iter();
@@ -99,7 +97,7 @@ impl CoordinateSystem {
     pub fn find_intersections(&self, ignore_diagonals: bool) -> HashMap<[u32; 2], u32> {
         let mut intersections = HashMap::<[u32; 2], u32>::new();
         for l in self.lines.iter() {
-            if ignore_diagonals && l.orient == Orient::DIAGONAL {
+            if ignore_diagonals && l.orient == Orient::Diagonal {
                 continue;
             }
             for p in l.points.iter() {
